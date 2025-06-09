@@ -2,8 +2,8 @@ import SwiftUI
 
 struct SettingsView: View {
     @EnvironmentObject private var appState: AppStateManager
-    @EnvironmentObject private var llmService: LLMProviderService
-    @EnvironmentObject private var diagnostics: DiagnosticsService
+    @EnvironmentObject private var llmService: DefaultLLMProviderService
+    @EnvironmentObject private var diagnostics: DefaultDiagnosticsService
     
     var body: some View {
         TabView {
@@ -40,7 +40,7 @@ struct SettingsView: View {
 // MARK: - Providers Settings
 
 struct ProvidersSettingsView: View {
-    @EnvironmentObject private var llmService: LLMProviderService
+    @EnvironmentObject private var llmService: DefaultLLMProviderService
     @State private var showingAddProvider = false
     @State private var testingProvider: String?
     
@@ -109,11 +109,11 @@ struct ProvidersSettingsView: View {
         }
     }
     
-    private func testProvider(_ provider: LLMProvider) {
+    private func testProvider(_ provider: any LLMProvider) {
         testingProvider = provider.id
         
         Task {
-            let isHealthy = await llmService.validateProvider(provider)
+            _ = await llmService.validateProvider(provider)
             
             await MainActor.run {
                 testingProvider = nil
@@ -124,7 +124,7 @@ struct ProvidersSettingsView: View {
 }
 
 struct ProviderRow: View {
-    let provider: LLMProvider
+    let provider: any LLMProvider
     let isSelected: Bool
     let isTesting: Bool
     let onSelect: () -> Void
@@ -261,7 +261,7 @@ struct GeneralSettingsView: View {
 
 struct PrivacySettingsView: View {
     @EnvironmentObject private var appState: AppStateManager
-    @EnvironmentObject private var diagnostics: DiagnosticsService
+    @EnvironmentObject private var diagnostics: DefaultDiagnosticsService
     
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
@@ -423,7 +423,7 @@ struct AdvancedSettingsView: View {
 // MARK: - Add Provider Sheet
 
 struct AddProviderSheet: View {
-    @EnvironmentObject private var llmService: LLMProviderService
+    @EnvironmentObject private var llmService: DefaultLLMProviderService
     @Environment(\.dismiss) private var dismiss
     
     @State private var selectedProviderType = "openai"
@@ -477,7 +477,6 @@ struct AddProviderSheet: View {
             }
             .padding()
             .navigationTitle("Add Provider")
-            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") {

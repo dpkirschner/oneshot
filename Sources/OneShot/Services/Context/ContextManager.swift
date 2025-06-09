@@ -1,6 +1,6 @@
 import Foundation
 
-protocol ContextManager: AnyObject, ObservableObject {
+protocol ContextManager: AnyObject {
     var activeContextItems: [ContextItem] { get }
     var availableReferences: [String] { get }
     var monitoredPaths: Set<String> { get }
@@ -114,7 +114,7 @@ extension ContextManager {
             return false
         }.count
         
-        var summary = []
+        var summary: [String] = []
         if fileCount > 0 { summary.append("\(fileCount) file(s)") }
         if dirCount > 0 { summary.append("\(dirCount) folder(s)") }
         

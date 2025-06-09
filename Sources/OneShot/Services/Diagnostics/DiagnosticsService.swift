@@ -1,6 +1,6 @@
 import Foundation
 
-protocol DiagnosticsService: AnyObject, ObservableObject {
+protocol DiagnosticsService: AnyObject {
     var metrics: AppMetrics { get }
     var isCollectingMetrics: Bool { get set }
     

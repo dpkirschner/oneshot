@@ -177,7 +177,7 @@ extension Constants {
         }
         
         static var exports: URL {
-            FileManager.default.urls(for: .documentsDirectory, in: .userDomainMask).first!
+            FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
                 .appendingPathComponent("\(App.name) Exports")
         }
     }

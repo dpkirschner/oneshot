@@ -1,8 +1,8 @@
 import SwiftUI
 
 struct ChatView: View {
-    @EnvironmentObject private var sessionManager: SessionManager
-    @EnvironmentObject private var contextManager: ContextManager
+    @EnvironmentObject private var sessionManager: CoreDataSessionManager
+    @EnvironmentObject private var contextManager: DefaultContextManager
     @StateObject private var viewModel = ChatViewModel()
     
     @State private var inputText = ""
@@ -246,7 +246,7 @@ struct ContextChip: View {
 // MARK: - Context Sheet
 
 struct ContextSheetView: View {
-    @EnvironmentObject private var contextManager: ContextManager
+    @EnvironmentObject private var contextManager: DefaultContextManager
     @Environment(\.dismiss) private var dismiss
     
     var body: some View {

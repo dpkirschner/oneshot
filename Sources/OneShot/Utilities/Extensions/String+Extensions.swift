@@ -67,9 +67,9 @@ extension String {
     }
     
     func detectLanguage() -> String? {
-        let extension = fileExtension
+        let ext = fileExtension
         
-        switch extension {
+        switch ext {
         case "swift": return "swift"
         case "js", "jsx": return "javascript"
         case "ts", "tsx": return "typescript"

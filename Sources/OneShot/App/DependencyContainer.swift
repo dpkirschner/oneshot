@@ -1,4 +1,5 @@
 import Foundation
+import SwiftUI
 
 protocol ServiceContainer {
     func resolve<T>(_ type: T.Type) -> T
@@ -94,7 +95,9 @@ final class DefaultServiceContainer: ServiceContainer {
         }
         
         registerSingleton(AppStateManager.self) {
-            AppStateManager(container: self)
+            MainActor.assumeIsolated {
+                AppStateManager(container: self)
+            }
         }
     }
 }
@@ -102,7 +105,7 @@ final class DefaultServiceContainer: ServiceContainer {
 // MARK: - Service Container Extensions
 
 extension DefaultServiceContainer {
-    func registerLLMProvider(_ provider: LLMProvider) {
+    func registerLLMProvider(_ provider: any LLMProvider) {
         let llmService = resolve(LLMProviderService.self)
         llmService.addProvider(provider)
     }
@@ -270,9 +273,9 @@ protocol KeychainService {
 
 // MARK: - Forward Declarations for Default Implementations
 
-class DefaultLLMProviderService: LLMProviderService {
-    @Published var availableProviders: [LLMProvider] = []
-    @Published var currentProvider: LLMProvider?
+class DefaultLLMProviderService: LLMProviderService, ObservableObject {
+    @Published var availableProviders: [any LLMProvider] = []
+    @Published var currentProvider: (any LLMProvider)?
     
     private let container: ServiceContainer
     
@@ -289,7 +292,7 @@ class DefaultLLMProviderService: LLMProviderService {
         fatalError("Not implemented yet")
     }
     
-    func addProvider(_ provider: LLMProvider) {
+    func addProvider(_ provider: any LLMProvider) {
         availableProviders.append(provider)
         if currentProvider == nil {
             currentProvider = provider
@@ -303,16 +306,16 @@ class DefaultLLMProviderService: LLMProviderService {
         }
     }
     
-    func getProvider(id: String) -> LLMProvider? {
+    func getProvider(id: String) -> (any LLMProvider)? {
         availableProviders.first { $0.id == id }
     }
     
-    func validateProvider(_ provider: LLMProvider) async -> Bool {
+    func validateProvider(_ provider: any LLMProvider) async -> Bool {
         await provider.healthCheck()
     }
 }
 
-class DefaultContextManager: ContextManager {
+class DefaultContextManager: ContextManager, ObservableObject {
     @Published var activeContextItems: [ContextItem] = []
     @Published var availableReferences: [String] = []
     @Published var monitoredPaths: Set<String> = []
@@ -379,7 +382,7 @@ class DefaultContextManager: ContextManager {
     }
 }
 
-class CoreDataSessionManager: SessionManager {
+class CoreDataSessionManager: SessionManager, ObservableObject {
     @Published var currentSession: Session?
     @Published var recentSessions: [SessionSummary] = []
     
@@ -464,7 +467,7 @@ class CoreDataSessionManager: SessionManager {
     }
 }
 
-class DefaultDiagnosticsService: DiagnosticsService {
+class DefaultDiagnosticsService: DiagnosticsService, ObservableObject {
     @Published var metrics: AppMetrics = .empty
     @Published var isCollectingMetrics = true
     
@@ -536,9 +539,9 @@ class DefaultKeychainService: KeychainService {
 
 // MARK: - Mock Services for Testing
 
-class MockLLMProviderService: LLMProviderService {
-    @Published var availableProviders: [LLMProvider] = []
-    @Published var currentProvider: LLMProvider?
+class MockLLMProviderService: LLMProviderService, ObservableObject {
+    @Published var availableProviders: [any LLMProvider] = []
+    @Published var currentProvider: (any LLMProvider)?
     var isConfigured: Bool = true
     
     func sendMessage(_ message: String, context: [ContextItem], configuration: LLMConfiguration) async throws -> AsyncStream<MessageChunk> {
@@ -548,13 +551,13 @@ class MockLLMProviderService: LLMProviderService {
         }
     }
     
-    func addProvider(_ provider: LLMProvider) {}
+    func addProvider(_ provider: any LLMProvider) {}
     func removeProvider(id: String) {}
-    func getProvider(id: String) -> LLMProvider? { nil }
-    func validateProvider(_ provider: LLMProvider) async -> Bool { true }
+    func getProvider(id: String) -> (any LLMProvider)? { nil }
+    func validateProvider(_ provider: any LLMProvider) async -> Bool { true }
 }
 
-class MockContextManager: ContextManager {
+class MockContextManager: ContextManager, ObservableObject {
     @Published var activeContextItems: [ContextItem] = []
     @Published var availableReferences: [String] = []
     @Published var monitoredPaths: Set<String> = []
@@ -577,7 +580,7 @@ class MockContextManager: ContextManager {
     func refreshContext() async {}
 }
 
-class MockSessionManager: SessionManager {
+class MockSessionManager: SessionManager, ObservableObject {
     @Published var currentSession: Session?
     @Published var recentSessions: [SessionSummary] = []
     
@@ -607,7 +610,7 @@ class MockSessionManager: SessionManager {
     func setAutoSave(enabled: Bool, for sessionId: UUID) {}
 }
 
-class MockDiagnosticsService: DiagnosticsService {
+class MockDiagnosticsService: DiagnosticsService, ObservableObject {
     @Published var metrics: AppMetrics = .empty
     @Published var isCollectingMetrics = true
     

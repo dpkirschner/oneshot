@@ -7,11 +7,11 @@ final class ChatViewModel: ObservableObject {
     @Published var isGenerating = false
     @Published var error: String?
     
-    private var sessionManager: SessionManager?
-    private var contextManager: ContextManager?
+    private var sessionManager: CoreDataSessionManager?
+    private var contextManager: DefaultContextManager?
     private var currentGenerationTask: Task<Void, Never>?
     
-    func setup(sessionManager: SessionManager, contextManager: ContextManager) {
+    func setup(sessionManager: CoreDataSessionManager, contextManager: DefaultContextManager) {
         self.sessionManager = sessionManager
         self.contextManager = contextManager
         
@@ -254,7 +254,7 @@ extension ChatViewModel {
         var processedContent = content
         
         // Process @file and @folder references
-        let regex = /@(file|folder):([^\s]+)/
+        let regex = "@(file|folder):([^\\s]+)"
         let matches = processedContent.matches(for: regex)
         
         for match in matches {
@@ -270,18 +270,3 @@ extension ChatViewModel {
     }
 }
 
-// MARK: - String Extension for Regex
-
-extension String {
-    func matches(for regex: String) -> [String] {
-        do {
-            let regex = try NSRegularExpression(pattern: regex)
-            let results = regex.matches(in: self, range: NSRange(self.startIndex..., in: self))
-            return results.map {
-                String(self[Range($0.range, in: self)!])
-            }
-        } catch {
-            return []
-        }
-    }
-}

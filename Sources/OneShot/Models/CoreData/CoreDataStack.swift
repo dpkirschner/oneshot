@@ -6,8 +6,202 @@ final class CoreDataStack {
     
     private init() {}
     
+    private func createManagedObjectModel() -> NSManagedObjectModel {
+        let model = NSManagedObjectModel()
+        
+        // Create ConversationEntity
+        let conversationEntity = NSEntityDescription()
+        conversationEntity.name = "ConversationEntity"
+        conversationEntity.managedObjectClassName = "ConversationEntity"
+        
+        // ConversationEntity attributes
+        let conversationId = NSAttributeDescription()
+        conversationId.name = "id"
+        conversationId.attributeType = .UUIDAttributeType
+        conversationId.isOptional = false
+        
+        let conversationTitle = NSAttributeDescription()
+        conversationTitle.name = "title"
+        conversationTitle.attributeType = .stringAttributeType
+        conversationTitle.isOptional = false
+        
+        let conversationCreatedAt = NSAttributeDescription()
+        conversationCreatedAt.name = "createdAt"
+        conversationCreatedAt.attributeType = .dateAttributeType
+        conversationCreatedAt.isOptional = false
+        
+        let conversationLastModified = NSAttributeDescription()
+        conversationLastModified.name = "lastModified"
+        conversationLastModified.attributeType = .dateAttributeType
+        conversationLastModified.isOptional = false
+        
+        let conversationIsArchived = NSAttributeDescription()
+        conversationIsArchived.name = "isArchived"
+        conversationIsArchived.attributeType = .booleanAttributeType
+        conversationIsArchived.isOptional = false
+        conversationIsArchived.defaultValue = false
+        
+        let conversationProvider = NSAttributeDescription()
+        conversationProvider.name = "provider"
+        conversationProvider.attributeType = .stringAttributeType
+        conversationProvider.isOptional = false
+        
+        let conversationModel = NSAttributeDescription()
+        conversationModel.name = "model"
+        conversationModel.attributeType = .stringAttributeType
+        conversationModel.isOptional = false
+        
+        let conversationMetadata = NSAttributeDescription()
+        conversationMetadata.name = "metadata"
+        conversationMetadata.attributeType = .binaryDataAttributeType
+        conversationMetadata.isOptional = true
+        
+        conversationEntity.properties = [
+            conversationId, conversationTitle, conversationCreatedAt,
+            conversationLastModified, conversationIsArchived, conversationProvider,
+            conversationModel, conversationMetadata
+        ]
+        
+        // Create MessageEntity
+        let messageEntity = NSEntityDescription()
+        messageEntity.name = "MessageEntity"
+        messageEntity.managedObjectClassName = "MessageEntity"
+        
+        // MessageEntity attributes
+        let messageId = NSAttributeDescription()
+        messageId.name = "id"
+        messageId.attributeType = .UUIDAttributeType
+        messageId.isOptional = false
+        
+        let messageContent = NSAttributeDescription()
+        messageContent.name = "content"
+        messageContent.attributeType = .stringAttributeType
+        messageContent.isOptional = false
+        
+        let messageRole = NSAttributeDescription()
+        messageRole.name = "role"
+        messageRole.attributeType = .stringAttributeType
+        messageRole.isOptional = false
+        
+        let messageTimestamp = NSAttributeDescription()
+        messageTimestamp.name = "timestamp"
+        messageTimestamp.attributeType = .dateAttributeType
+        messageTimestamp.isOptional = false
+        
+        let messageInputTokens = NSAttributeDescription()
+        messageInputTokens.name = "inputTokens"
+        messageInputTokens.attributeType = .integer32AttributeType
+        messageInputTokens.isOptional = false
+        messageInputTokens.defaultValue = 0
+        
+        let messageOutputTokens = NSAttributeDescription()
+        messageOutputTokens.name = "outputTokens"
+        messageOutputTokens.attributeType = .integer32AttributeType
+        messageOutputTokens.isOptional = false
+        messageOutputTokens.defaultValue = 0
+        
+        let messageMetadata = NSAttributeDescription()
+        messageMetadata.name = "metadata"
+        messageMetadata.attributeType = .binaryDataAttributeType
+        messageMetadata.isOptional = true
+        
+        messageEntity.properties = [
+            messageId, messageContent, messageRole, messageTimestamp,
+            messageInputTokens, messageOutputTokens, messageMetadata
+        ]
+        
+        // Create ContextItemEntity
+        let contextItemEntity = NSEntityDescription()
+        contextItemEntity.name = "ContextItemEntity"
+        contextItemEntity.managedObjectClassName = "ContextItemEntity"
+        
+        // ContextItemEntity attributes
+        let contextItemId = NSAttributeDescription()
+        contextItemId.name = "id"
+        contextItemId.attributeType = .stringAttributeType
+        contextItemId.isOptional = false
+        
+        let contextItemType = NSAttributeDescription()
+        contextItemType.name = "type"
+        contextItemType.attributeType = .stringAttributeType
+        contextItemType.isOptional = false
+        
+        let contextItemPath = NSAttributeDescription()
+        contextItemPath.name = "path"
+        contextItemPath.attributeType = .stringAttributeType
+        contextItemPath.isOptional = false
+        
+        let contextItemName = NSAttributeDescription()
+        contextItemName.name = "name"
+        contextItemName.attributeType = .stringAttributeType
+        contextItemName.isOptional = false
+        
+        let contextItemTokenCount = NSAttributeDescription()
+        contextItemTokenCount.name = "tokenCount"
+        contextItemTokenCount.attributeType = .integer32AttributeType
+        contextItemTokenCount.isOptional = false
+        contextItemTokenCount.defaultValue = 0
+        
+        let contextItemLastModified = NSAttributeDescription()
+        contextItemLastModified.name = "lastModified"
+        contextItemLastModified.attributeType = .dateAttributeType
+        contextItemLastModified.isOptional = false
+        
+        let contextItemMetadata = NSAttributeDescription()
+        contextItemMetadata.name = "metadata"
+        contextItemMetadata.attributeType = .binaryDataAttributeType
+        contextItemMetadata.isOptional = true
+        
+        contextItemEntity.properties = [
+            contextItemId, contextItemType, contextItemPath, contextItemName,
+            contextItemTokenCount, contextItemLastModified, contextItemMetadata
+        ]
+        
+        // Create relationships
+        let conversationMessagesRelationship = NSRelationshipDescription()
+        conversationMessagesRelationship.name = "messages"
+        conversationMessagesRelationship.destinationEntity = messageEntity
+        conversationMessagesRelationship.maxCount = 0 // 0 means to-many
+        conversationMessagesRelationship.deleteRule = .cascadeDeleteRule
+        
+        let messageConversationRelationship = NSRelationshipDescription()
+        messageConversationRelationship.name = "conversation"
+        messageConversationRelationship.destinationEntity = conversationEntity
+        messageConversationRelationship.maxCount = 1 // 1 means to-one
+        messageConversationRelationship.deleteRule = .nullifyDeleteRule
+        
+        let messageContextItemsRelationship = NSRelationshipDescription()
+        messageContextItemsRelationship.name = "contextItems"
+        messageContextItemsRelationship.destinationEntity = contextItemEntity
+        messageContextItemsRelationship.maxCount = 0 // 0 means to-many
+        messageContextItemsRelationship.deleteRule = .cascadeDeleteRule
+        
+        let contextItemMessageRelationship = NSRelationshipDescription()
+        contextItemMessageRelationship.name = "message"
+        contextItemMessageRelationship.destinationEntity = messageEntity
+        contextItemMessageRelationship.maxCount = 1 // 1 means to-one
+        contextItemMessageRelationship.deleteRule = .nullifyDeleteRule
+        
+        // Set inverse relationships
+        conversationMessagesRelationship.inverseRelationship = messageConversationRelationship
+        messageConversationRelationship.inverseRelationship = conversationMessagesRelationship
+        messageContextItemsRelationship.inverseRelationship = contextItemMessageRelationship
+        contextItemMessageRelationship.inverseRelationship = messageContextItemsRelationship
+        
+        // Add relationships to entities
+        conversationEntity.properties.append(conversationMessagesRelationship)
+        messageEntity.properties.append(contentsOf: [messageConversationRelationship, messageContextItemsRelationship])
+        contextItemEntity.properties.append(contextItemMessageRelationship)
+        
+        // Add entities to model
+        model.entities = [conversationEntity, messageEntity, contextItemEntity]
+        
+        return model
+    }
+    
     lazy var persistentContainer: NSPersistentContainer = {
-        let container = NSPersistentContainer(name: "OneShot")
+        let managedObjectModel = createManagedObjectModel()
+        let container = NSPersistentContainer(name: "OneShot", managedObjectModel: managedObjectModel)
         
         // Configure the store description for better performance
         let storeDescription = container.persistentStoreDescriptions.first
@@ -220,12 +414,12 @@ extension NSManagedObjectContext {
         }
     }
     
-    func fetch<T: NSManagedObject>(_ request: NSFetchRequest<T>) throws -> [T] {
-        return try fetch(request)
+    func executeFetch<T: NSManagedObject>(_ request: NSFetchRequest<T>) throws -> [T] {
+        return try self.fetch(request)
     }
     
-    func count<T: NSManagedObject>(for request: NSFetchRequest<T>) throws -> Int {
-        return try count(for: request)
+    func executeCount<T: NSManagedObject>(for request: NSFetchRequest<T>) throws -> Int {
+        return try self.count(for: request)
     }
     
     func deleteAndSave(_ object: NSManagedObject) throws {

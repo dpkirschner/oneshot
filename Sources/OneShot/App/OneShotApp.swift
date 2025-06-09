@@ -15,10 +15,10 @@ struct OneShotApp: App {
         WindowGroup {
             ContentView()
                 .environmentObject(container.resolve(AppStateManager.self))
-                .environmentObject(container.resolve(LLMProviderService.self))
-                .environmentObject(container.resolve(ContextManager.self))
-                .environmentObject(container.resolve(SessionManager.self))
-                .environmentObject(container.resolve(DiagnosticsService.self))
+                .environmentObject(container.resolve(LLMProviderService.self) as! DefaultLLMProviderService)
+                .environmentObject(container.resolve(ContextManager.self) as! DefaultContextManager)
+                .environmentObject(container.resolve(SessionManager.self) as! CoreDataSessionManager)
+                .environmentObject(container.resolve(DiagnosticsService.self) as! DefaultDiagnosticsService)
                 .onReceive(NotificationCenter.default.publisher(for: .showOneShotWindow)) { _ in
                     showMainWindow()
                 }
@@ -33,8 +33,8 @@ struct OneShotApp: App {
         Settings {
             SettingsView()
                 .environmentObject(container.resolve(AppStateManager.self))
-                .environmentObject(container.resolve(LLMProviderService.self))
-                .environmentObject(container.resolve(DiagnosticsService.self))
+                .environmentObject(container.resolve(LLMProviderService.self) as! DefaultLLMProviderService)
+                .environmentObject(container.resolve(DiagnosticsService.self) as! DefaultDiagnosticsService)
         }
     }
     

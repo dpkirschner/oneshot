@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct DiagnosticsView: View {
-    @EnvironmentObject private var diagnostics: DiagnosticsService
+    @EnvironmentObject private var diagnostics: DefaultDiagnosticsService
     @EnvironmentObject private var appState: AppStateManager
     
     @State private var selectedTimeRange: TimeRange = .lastHour
@@ -447,7 +447,7 @@ enum TimeRange: String, CaseIterable {
 // MARK: - Sessions View
 
 struct SessionsView: View {
-    @EnvironmentObject private var sessionManager: SessionManager
+    @EnvironmentObject private var sessionManager: CoreDataSessionManager
     @State private var searchText = ""
     @State private var showingArchived = false
     @State private var selectedSession: SessionSummary?

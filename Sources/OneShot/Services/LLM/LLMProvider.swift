@@ -21,9 +21,9 @@ protocol LLMProvider: AnyObject, Identifiable {
     func validateCredentials() async -> Bool
 }
 
-protocol LLMProviderService: AnyObject, ObservableObject {
-    var availableProviders: [LLMProvider] { get }
-    var currentProvider: LLMProvider? { get set }
+protocol LLMProviderService: AnyObject {
+    var availableProviders: [any LLMProvider] { get }
+    var currentProvider: (any LLMProvider)? { get set }
     var isConfigured: Bool { get }
     
     func sendMessage(
@@ -32,10 +32,10 @@ protocol LLMProviderService: AnyObject, ObservableObject {
         configuration: LLMConfiguration
     ) async throws -> AsyncStream<MessageChunk>
     
-    func addProvider(_ provider: LLMProvider)
+    func addProvider(_ provider: any LLMProvider)
     func removeProvider(id: String)
-    func getProvider(id: String) -> LLMProvider?
-    func validateProvider(_ provider: LLMProvider) async -> Bool
+    func getProvider(id: String) -> (any LLMProvider)?
+    func validateProvider(_ provider: any LLMProvider) async -> Bool
 }
 
 struct ProviderMetrics: Codable {

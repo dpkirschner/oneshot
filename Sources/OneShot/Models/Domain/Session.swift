@@ -34,7 +34,7 @@ struct Session: Identifiable, Codable {
     }
 }
 
-struct SessionSummary: Identifiable, Codable {
+struct SessionSummary: Identifiable, Codable, Hashable {
     let id: UUID
     let title: String
     let createdAt: Date

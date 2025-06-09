@@ -2,8 +2,8 @@ import SwiftUI
 
 struct ContentView: View {
     @EnvironmentObject private var appState: AppStateManager
-    @EnvironmentObject private var sessionManager: SessionManager
-    @EnvironmentObject private var contextManager: ContextManager
+    @EnvironmentObject private var sessionManager: CoreDataSessionManager
+    @EnvironmentObject private var contextManager: DefaultContextManager
     
     @State private var selectedSidebarItem: SidebarItem = .chat
     @State private var showingSidebar = true
@@ -78,16 +78,12 @@ struct ContentView: View {
     }
     
     private func createNewChat() {
-        // Create a new session if we have a configured provider
-        guard let provider = (sessionManager as? DefaultLLMProviderService)?.currentProvider else {
-            // Show configuration needed alert
-            return
-        }
-        
+        // Create a new session with default provider settings
+        // This will be improved when we add proper provider management
         let session = sessionManager.createSession(
             title: nil,
-            provider: provider.id,
-            model: provider.supportedModels.first?.id ?? "default"
+            provider: "openai", // Default provider
+            model: "gpt-4" // Default model
         )
         sessionManager.setCurrentSession(session)
     }
@@ -155,7 +151,8 @@ enum SidebarItem: String, CaseIterable, Identifiable {
 
 struct SidebarView: View {
     @Binding var selectedItem: SidebarItem
-    @EnvironmentObject private var sessionManager: SessionManager
+    @EnvironmentObject private var sessionManager: CoreDataSessionManager
+    @EnvironmentObject private var contextManager: DefaultContextManager
     @EnvironmentObject private var appState: AppStateManager
     
     var body: some View {
@@ -191,7 +188,7 @@ struct SidebarView: View {
                         Label(url.lastPathComponent, systemImage: "doc.text")
                             .onTapGesture {
                                 Task {
-                                    try? await (contextManager as? DefaultContextManager)?.addFileContext(at: url)
+                                    try? await contextManager.addFileContext(at: url)
                                 }
                             }
                     }

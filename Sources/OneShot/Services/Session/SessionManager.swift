@@ -1,6 +1,6 @@
 import Foundation
 
-protocol SessionManager: AnyObject, ObservableObject {
+protocol SessionManager: AnyObject {
     var currentSession: Session? { get }
     var recentSessions: [SessionSummary] { get }
     
