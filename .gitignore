@@ -32,6 +32,15 @@ Package.resolved
 # Xcode automatically generates this directory with a .xcworkspacedata file and xcuserdata
 # hence it is not needed unless you have added a package configuration file to your project
 .swiftpm/
+.package.resolved
+
+# Swift Package Manager build artifacts and caches
+/.build/
+.build/
+/build/
+build/
+.swiftpm/xcode/
+.swiftpm/configuration/
 
 # CocoaPods
 #
@@ -111,6 +120,20 @@ Temporary Items
 .build/
 build/
 DerivedData/
+*.dSYM.zip
+*.dSYM
+
+# Xcode build artifacts
+xcuserdata/
+*.moved-aside
+*.pbxuser
+!default.pbxuser
+*.mode1v3
+!default.mode1v3
+*.mode2v3
+!default.mode2v3
+*.perspectivev3
+!default.perspectivev3
 
 # Core Data
 *.sqlite
@@ -173,6 +196,34 @@ Library/Application Support/OneShot/
 *.bak
 *.backup
 *.old
+
+# Large binary files and media
+*.mov
+*.mp4
+*.avi
+*.mkv
+*.dmg
+*.pkg
+*.zip
+*.tar.gz
+*.rar
+*.7z
+
+# macOS Simulator files
+**/iOS Simulator/
+**/iPhone Simulator/
+
+# Thumbnails and previews
+Thumbs.db
+ehthumbs.db
+
+# Swift Playgrounds
+timeline.xctimeline
+playground.xcworkspace
+
+# Firebase
+GoogleService-Info.plist
+google-services.json
 
 # Profile and performance data
 *.trace
