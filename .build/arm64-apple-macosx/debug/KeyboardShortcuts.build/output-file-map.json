@@ -1,0 +1,71 @@
+{
+  "": {
+    "swift-dependencies": "/opt/code/oneshot/.build/arm64-apple-macosx/debug/KeyboardShortcuts.build/master.swiftdeps"
+  },
+  "/opt/code/oneshot/.build/checkouts/KeyboardShortcuts/Sources/KeyboardShortcuts/CarbonKeyboardShortcuts.swift": {
+    "dependencies": "/opt/code/oneshot/.build/arm64-apple-macosx/debug/KeyboardShortcuts.build/CarbonKeyboardShortcuts.d",
+    "object": "/opt/code/oneshot/.build/arm64-apple-macosx/debug/KeyboardShortcuts.build/CarbonKeyboardShortcuts.swift.o",
+    "swiftmodule": "/opt/code/oneshot/.build/arm64-apple-macosx/debug/KeyboardShortcuts.build/CarbonKeyboardShortcuts~partial.swiftmodule",
+    "swift-dependencies": "/opt/code/oneshot/.build/arm64-apple-macosx/debug/KeyboardShortcuts.build/CarbonKeyboardShortcuts.swiftdeps"
+  },
+  "/opt/code/oneshot/.build/checkouts/KeyboardShortcuts/Sources/KeyboardShortcuts/Key.swift": {
+    "dependencies": "/opt/code/oneshot/.build/arm64-apple-macosx/debug/KeyboardShortcuts.build/Key.d",
+    "object": "/opt/code/oneshot/.build/arm64-apple-macosx/debug/KeyboardShortcuts.build/Key.swift.o",
+    "swiftmodule": "/opt/code/oneshot/.build/arm64-apple-macosx/debug/KeyboardShortcuts.build/Key~partial.swiftmodule",
+    "swift-dependencies": "/opt/code/oneshot/.build/arm64-apple-macosx/debug/KeyboardShortcuts.build/Key.swiftdeps"
+  },
+  "/opt/code/oneshot/.build/checkouts/KeyboardShortcuts/Sources/KeyboardShortcuts/KeyboardShortcuts.swift": {
+    "dependencies": "/opt/code/oneshot/.build/arm64-apple-macosx/debug/KeyboardShortcuts.build/KeyboardShortcuts.d",
+    "object": "/opt/code/oneshot/.build/arm64-apple-macosx/debug/KeyboardShortcuts.build/KeyboardShortcuts.swift.o",
+    "swiftmodule": "/opt/code/oneshot/.build/arm64-apple-macosx/debug/KeyboardShortcuts.build/KeyboardShortcuts~partial.swiftmodule",
+    "swift-dependencies": "/opt/code/oneshot/.build/arm64-apple-macosx/debug/KeyboardShortcuts.build/KeyboardShortcuts.swiftdeps"
+  },
+  "/opt/code/oneshot/.build/checkouts/KeyboardShortcuts/Sources/KeyboardShortcuts/NSMenuItem++.swift": {
+    "dependencies": "/opt/code/oneshot/.build/arm64-apple-macosx/debug/KeyboardShortcuts.build/NSMenuItem++.d",
+    "object": "/opt/code/oneshot/.build/arm64-apple-macosx/debug/KeyboardShortcuts.build/NSMenuItem++.swift.o",
+    "swiftmodule": "/opt/code/oneshot/.build/arm64-apple-macosx/debug/KeyboardShortcuts.build/NSMenuItem++~partial.swiftmodule",
+    "swift-dependencies": "/opt/code/oneshot/.build/arm64-apple-macosx/debug/KeyboardShortcuts.build/NSMenuItem++.swiftdeps"
+  },
+  "/opt/code/oneshot/.build/checkouts/KeyboardShortcuts/Sources/KeyboardShortcuts/Name.swift": {
+    "dependencies": "/opt/code/oneshot/.build/arm64-apple-macosx/debug/KeyboardShortcuts.build/Name.d",
+    "object": "/opt/code/oneshot/.build/arm64-apple-macosx/debug/KeyboardShortcuts.build/Name.swift.o",
+    "swiftmodule": "/opt/code/oneshot/.build/arm64-apple-macosx/debug/KeyboardShortcuts.build/Name~partial.swiftmodule",
+    "swift-dependencies": "/opt/code/oneshot/.build/arm64-apple-macosx/debug/KeyboardShortcuts.build/Name.swiftdeps"
+  },
+  "/opt/code/oneshot/.build/checkouts/KeyboardShortcuts/Sources/KeyboardShortcuts/Recorder.swift": {
+    "dependencies": "/opt/code/oneshot/.build/arm64-apple-macosx/debug/KeyboardShortcuts.build/Recorder.d",
+    "object": "/opt/code/oneshot/.build/arm64-apple-macosx/debug/KeyboardShortcuts.build/Recorder.swift.o",
+    "swiftmodule": "/opt/code/oneshot/.build/arm64-apple-macosx/debug/KeyboardShortcuts.build/Recorder~partial.swiftmodule",
+    "swift-dependencies": "/opt/code/oneshot/.build/arm64-apple-macosx/debug/KeyboardShortcuts.build/Recorder.swiftdeps"
+  },
+  "/opt/code/oneshot/.build/checkouts/KeyboardShortcuts/Sources/KeyboardShortcuts/RecorderCocoa.swift": {
+    "dependencies": "/opt/code/oneshot/.build/arm64-apple-macosx/debug/KeyboardShortcuts.build/RecorderCocoa.d",
+    "object": "/opt/code/oneshot/.build/arm64-apple-macosx/debug/KeyboardShortcuts.build/RecorderCocoa.swift.o",
+    "swiftmodule": "/opt/code/oneshot/.build/arm64-apple-macosx/debug/KeyboardShortcuts.build/RecorderCocoa~partial.swiftmodule",
+    "swift-dependencies": "/opt/code/oneshot/.build/arm64-apple-macosx/debug/KeyboardShortcuts.build/RecorderCocoa.swiftdeps"
+  },
+  "/opt/code/oneshot/.build/checkouts/KeyboardShortcuts/Sources/KeyboardShortcuts/Shortcut.swift": {
+    "dependencies": "/opt/code/oneshot/.build/arm64-apple-macosx/debug/KeyboardShortcuts.build/Shortcut.d",
+    "object": "/opt/code/oneshot/.build/arm64-apple-macosx/debug/KeyboardShortcuts.build/Shortcut.swift.o",
+    "swiftmodule": "/opt/code/oneshot/.build/arm64-apple-macosx/debug/KeyboardShortcuts.build/Shortcut~partial.swiftmodule",
+    "swift-dependencies": "/opt/code/oneshot/.build/arm64-apple-macosx/debug/KeyboardShortcuts.build/Shortcut.swiftdeps"
+  },
+  "/opt/code/oneshot/.build/checkouts/KeyboardShortcuts/Sources/KeyboardShortcuts/Utilities.swift": {
+    "dependencies": "/opt/code/oneshot/.build/arm64-apple-macosx/debug/KeyboardShortcuts.build/Utilities.d",
+    "object": "/opt/code/oneshot/.build/arm64-apple-macosx/debug/KeyboardShortcuts.build/Utilities.swift.o",
+    "swiftmodule": "/opt/code/oneshot/.build/arm64-apple-macosx/debug/KeyboardShortcuts.build/Utilities~partial.swiftmodule",
+    "swift-dependencies": "/opt/code/oneshot/.build/arm64-apple-macosx/debug/KeyboardShortcuts.build/Utilities.swiftdeps"
+  },
+  "/opt/code/oneshot/.build/checkouts/KeyboardShortcuts/Sources/KeyboardShortcuts/ViewModifiers.swift": {
+    "dependencies": "/opt/code/oneshot/.build/arm64-apple-macosx/debug/KeyboardShortcuts.build/ViewModifiers.d",
+    "object": "/opt/code/oneshot/.build/arm64-apple-macosx/debug/KeyboardShortcuts.build/ViewModifiers.swift.o",
+    "swiftmodule": "/opt/code/oneshot/.build/arm64-apple-macosx/debug/KeyboardShortcuts.build/ViewModifiers~partial.swiftmodule",
+    "swift-dependencies": "/opt/code/oneshot/.build/arm64-apple-macosx/debug/KeyboardShortcuts.build/ViewModifiers.swiftdeps"
+  },
+  "/opt/code/oneshot/.build/arm64-apple-macosx/debug/KeyboardShortcuts.build/DerivedSources/resource_bundle_accessor.swift": {
+    "dependencies": "/opt/code/oneshot/.build/arm64-apple-macosx/debug/KeyboardShortcuts.build/resource_bundle_accessor.d",
+    "object": "/opt/code/oneshot/.build/arm64-apple-macosx/debug/KeyboardShortcuts.build/resource_bundle_accessor.swift.o",
+    "swiftmodule": "/opt/code/oneshot/.build/arm64-apple-macosx/debug/KeyboardShortcuts.build/resource_bundle_accessor~partial.swiftmodule",
+    "swift-dependencies": "/opt/code/oneshot/.build/arm64-apple-macosx/debug/KeyboardShortcuts.build/resource_bundle_accessor.swiftdeps"
+  }
+}

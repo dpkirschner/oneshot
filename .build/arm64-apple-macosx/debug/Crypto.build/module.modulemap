@@ -1,0 +1,4 @@
+module Crypto {
+    header "/opt/code/oneshot/.build/arm64-apple-macosx/debug/Crypto.build/Crypto-Swift.h"
+    requires objc
+}

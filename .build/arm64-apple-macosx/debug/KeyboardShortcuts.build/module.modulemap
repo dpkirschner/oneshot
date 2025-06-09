@@ -1,0 +1,4 @@
+module KeyboardShortcuts {
+    header "/opt/code/oneshot/.build/arm64-apple-macosx/debug/KeyboardShortcuts.build/KeyboardShortcuts-Swift.h"
+    requires objc
+}
