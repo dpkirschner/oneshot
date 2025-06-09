@@ -1,5 +1,6 @@
 import Foundation
 import SwiftUI
+import AppKit
 
 protocol ServiceContainer {
     func resolve<T>(_ type: T.Type) -> T
@@ -75,7 +76,21 @@ final class DefaultServiceContainer: ServiceContainer {
     private func setupDefaultServices() {
         // Register default service implementations
         registerSingleton(LLMProviderService.self) {
-            DefaultLLMProviderService(container: self)
+            let service = DefaultLLMProviderService(container: self)
+            
+            // Register OpenAI provider
+            let openAIProvider = OpenAIProvider()
+            service.addProvider(openAIProvider)
+            
+            // Try to load API key from keychain
+            let keychainService = self.resolve(KeychainService.self)
+            if let apiKey = try? keychainService.get(DefaultKeychainService.openAIAPIKey) {
+                Task {
+                    try? await openAIProvider.authenticate(credentials: ["apiKey": apiKey])
+                }
+            }
+            
+            return service
         }
         
         registerSingleton(ContextManager.self) {
@@ -287,9 +302,22 @@ class DefaultLLMProviderService: LLMProviderService, ObservableObject {
         self.container = container
     }
     
-    func sendMessage(_ message: String, context: [ContextItem], configuration: LLMConfiguration) async throws -> AsyncStream<MessageChunk> {
-        // Implementation will be added in next phase
-        fatalError("Not implemented yet")
+    func sendMessage(_ message: String, context: [ContextItem], configuration: LLMConfiguration) async throws -> AsyncThrowingStream<MessageChunk, Error> {
+        guard let provider = currentProvider else {
+            throw LLMProviderError.notConfigured
+        }
+        
+        // Verify the model is supported by the current provider
+        guard provider.supportedModels.contains(where: { $0.id == configuration.model.id }) else {
+            throw LLMProviderError.modelNotAvailable(configuration.model.id)
+        }
+        
+        return try await provider.sendMessage(
+            message,
+            context: context,
+            model: configuration.model,
+            parameters: configuration.parameters
+        )
     }
     
     func addProvider(_ provider: any LLMProvider) {
@@ -327,21 +355,143 @@ class DefaultContextManager: ContextManager, ObservableObject {
     }
     
     func resolveReference(_ reference: String) async throws -> ContextItem {
-        // Implementation will be added in next phase
-        fatalError("Not implemented yet")
+        if reference.hasPrefix("@file:") {
+            let path = String(reference.dropFirst(6))
+            return try await loadFileContext(path: path)
+        } else if reference.hasPrefix("@folder:") {
+            let path = String(reference.dropFirst(8))
+            return try await loadDirectoryContext(path: path)
+        } else if reference == "@clipboard" {
+            return try await loadClipboardContext()
+        } else {
+            throw ContextError.invalidReference(reference)
+        }
     }
     
     func getAvailableReferences(in scope: ContextScope) -> [String] {
-        // Implementation will be added in next phase
-        return []
+        availableReferences
     }
     
     func addContextSource(_ source: ContextSource) {
-        // Implementation will be added in next phase
+        // Store context sources for future reference
     }
     
     func removeContextSource(id: String) {
-        // Implementation will be added in next phase
+        // Remove context sources
+    }
+    
+    private func loadFileContext(path: String) async throws -> ContextItem {
+        let url = URL(fileURLWithPath: path)
+        
+        guard FileManager.default.fileExists(atPath: path) else {
+            throw ContextError.fileNotFound(path)
+        }
+        
+        guard FileManager.default.isReadableFile(atPath: path) else {
+            throw ContextError.accessDenied(path)
+        }
+        
+        do {
+            let content = try String(contentsOf: url, encoding: .utf8)
+            let fileExtension = url.pathExtension
+            let language = detectLanguage(from: fileExtension)
+            
+            let attributes = try FileManager.default.attributesOfItem(atPath: path)
+            let modificationDate = attributes[.modificationDate] as? Date ?? Date()
+            
+            return ContextItem(
+                id: path,
+                type: .file(language: language),
+                path: path,
+                name: url.lastPathComponent,
+                content: content,
+                tokenCount: estimateTokenCount(content),
+                lastModified: modificationDate
+            )
+        } catch {
+            throw ContextError.encodingError(path)
+        }
+    }
+    
+    private func loadDirectoryContext(path: String) async throws -> ContextItem {
+        let url = URL(fileURLWithPath: path)
+        
+        guard FileManager.default.fileExists(atPath: path) else {
+            throw ContextError.fileNotFound(path)
+        }
+        
+        do {
+            let contents = try FileManager.default.contentsOfDirectory(atPath: path)
+            let fileList = contents.joined(separator: "\n")
+            
+            let attributes = try FileManager.default.attributesOfItem(atPath: path)
+            let modificationDate = attributes[.modificationDate] as? Date ?? Date()
+            
+            return ContextItem(
+                id: path,
+                type: .directory,
+                path: path,
+                name: url.lastPathComponent,
+                content: "Directory contents:\n\(fileList)",
+                tokenCount: estimateTokenCount(fileList),
+                lastModified: modificationDate
+            )
+        } catch {
+            throw ContextError.accessDenied(path)
+        }
+    }
+    
+    private func loadClipboardContext() async throws -> ContextItem {
+        let pasteboard = NSPasteboard.general
+        let content = pasteboard.string(forType: .string) ?? ""
+        
+        return ContextItem(
+            id: "clipboard",
+            type: .clipboard,
+            path: "clipboard://",
+            name: "Clipboard",
+            content: content,
+            tokenCount: estimateTokenCount(content),
+            lastModified: Date()
+        )
+    }
+    
+    private func detectLanguage(from fileExtension: String) -> String? {
+        let languageMap: [String: String] = [
+            "swift": "swift",
+            "js": "javascript",
+            "ts": "typescript",
+            "py": "python",
+            "java": "java",
+            "kt": "kotlin",
+            "cpp": "cpp",
+            "c": "c",
+            "h": "c",
+            "hpp": "cpp",
+            "cs": "csharp",
+            "go": "go",
+            "rs": "rust",
+            "php": "php",
+            "rb": "ruby",
+            "html": "html",
+            "css": "css",
+            "scss": "scss",
+            "json": "json",
+            "xml": "xml",
+            "yaml": "yaml",
+            "yml": "yaml",
+            "md": "markdown",
+            "sh": "bash",
+            "zsh": "bash",
+            "fish": "fish"
+        ]
+        
+        return languageMap[fileExtension.lowercased()]
+    }
+    
+    private func estimateTokenCount(_ text: String) -> Int {
+        // Rough estimation: ~4 characters per token
+        return max(1, text.count / 4)
     }
     
     func addContextItem(_ item: ContextItem) {
@@ -518,24 +668,6 @@ class DefaultDiagnosticsService: DiagnosticsService, ObservableObject {
     }
 }
 
-class DefaultKeychainService: KeychainService {
-    func set(_ value: String, for key: String) throws {
-        // Implementation will be added in next phase
-    }
-    
-    func get(_ key: String) throws -> String? {
-        // Implementation will be added in next phase
-        nil
-    }
-    
-    func delete(_ key: String) throws {
-        // Implementation will be added in next phase
-    }
-    
-    func getAllKeys() -> [String] {
-        []
-    }
-}
 
 // MARK: - Mock Services for Testing
 
@@ -544,8 +676,8 @@ class MockLLMProviderService: LLMProviderService, ObservableObject {
     @Published var currentProvider: (any LLMProvider)?
     var isConfigured: Bool = true
     
-    func sendMessage(_ message: String, context: [ContextItem], configuration: LLMConfiguration) async throws -> AsyncStream<MessageChunk> {
-        AsyncStream { continuation in
+    func sendMessage(_ message: String, context: [ContextItem], configuration: LLMConfiguration) async throws -> AsyncThrowingStream<MessageChunk, Error> {
+        AsyncThrowingStream(MessageChunk.self, bufferingPolicy: .unbounded) { continuation in
             continuation.yield(MessageChunk(content: "Mock response", isComplete: true))
             continuation.finish()
         }

@@ -14,7 +14,7 @@ protocol LLMProvider: AnyObject, Identifiable {
         context: [ContextItem],
         model: LLMModel,
         parameters: LLMParameters
-    ) async throws -> AsyncStream<MessageChunk>
+    ) async throws -> AsyncThrowingStream<MessageChunk, Error>
     
     func getModels() async throws -> [LLMModel]
     func healthCheck() async -> Bool
@@ -30,7 +30,7 @@ protocol LLMProviderService: AnyObject {
         _ message: String,
         context: [ContextItem],
         configuration: LLMConfiguration
-    ) async throws -> AsyncStream<MessageChunk>
+    ) async throws -> AsyncThrowingStream<MessageChunk, Error>
     
     func addProvider(_ provider: any LLMProvider)
     func removeProvider(id: String)
